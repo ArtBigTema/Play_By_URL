@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="app_name">Play by URL</string>
+    <string name="play">Play</string>
+     <string name="stop">Pause</string>
+ <string name="idle">Idle</string>
+     <string name="downloading">Downloading</string>
+      <string name="playing">Playing</string> 
+       <string name="togglebutton">Togglebutton</string> 
+        <string name="textview">null</string> 
+       
+      
+</resources>
