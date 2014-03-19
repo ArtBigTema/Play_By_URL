@@ -999,6 +999,7 @@ containing a value of this type.
         public static final int activity_chooser_view_content=0x7f050027;
         public static final int always=0x7f05000b;
         public static final int beginning=0x7f050011;
+        public static final int btn_play_pause_music=0x7f05001b;
         public static final int checkbox=0x7f05002f;
         public static final int collapseActionView=0x7f05000d;
         public static final int default_activity_button=0x7f05002a;
@@ -1038,11 +1039,10 @@ containing a value of this type.
         public static final int showHome=0x7f050004;
         public static final int showTitle=0x7f050006;
         public static final int split_action_bar=0x7f050020;
+        public static final int status_of_file_textview=0x7f05001a;
         public static final int submit_area=0x7f05003b;
         public static final int tabMode=0x7f050002;
-        public static final int textView1=0x7f05001a;
         public static final int title=0x7f05002d;
-        public static final int toggleButton1=0x7f05001b;
         public static final int top_action_bar=0x7f050022;
         public static final int up=0x7f050023;
         public static final int useLogo=0x7f050003;
@@ -1074,7 +1074,7 @@ containing a value of this type.
         public static final int abc_max_action_buttons=0x7f090000;
     }
     public static final class layout {
-        public static final int a_mp3_play=0x7f030000;
+        public static final int a_mp3_download_play=0x7f030000;
         public static final int abc_action_bar_decor=0x7f030001;
         public static final int abc_action_bar_decor_include=0x7f030002;
         public static final int abc_action_bar_decor_overlay=0x7f030003;
@@ -1146,14 +1146,16 @@ containing a value of this type.
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
         public static final int action_settings=0x7f0a000e;
         public static final int app_name=0x7f0a000f;
+        public static final int complete=0x7f0a0016;
         public static final int downloading=0x7f0a0013;
         public static final int hello_world=0x7f0a000d;
         public static final int idle=0x7f0a0012;
+        public static final int pause=0x7f0a0011;
+        public static final int pausing=0x7f0a0015;
         public static final int play=0x7f0a0010;
         public static final int playing=0x7f0a0014;
-        public static final int stop=0x7f0a0011;
-        public static final int textview=0x7f0a0016;
-        public static final int togglebutton=0x7f0a0015;
+        public static final int textview=0x7f0a0018;
+        public static final int togglebutton=0x7f0a0017;
     }
     public static final class style {
         /** 
