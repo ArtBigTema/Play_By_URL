@@ -22,25 +22,26 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class MP3playActivity extends Activity {
-	// static final String FILE_URL = "http://cs1-29v4.vk.me/p33/27d44612a54fe5.mp3";
+	// static final String FILE_URL =
+	// "http://cs1-29v4.vk.me/p33/27d44612a54fe5.mp3";
 	static final String FILE_PATH_NAME = Environment
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
-			+ "/jai_ho.mp3";
-	private static String FILE_URL = "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
+			+ "/ja_ho.mp3";
+	static final String FILE_URL = "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
 	static final String MUSIC_SAVE_START_TIME = "musicStartTime";
 	private static int musicStartTime = 0;
 	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
 	private ProgressDialog prgDialogDownloadMusic;
 	public static TextView statusOfFileTextView;
+	//public static boolean b = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class MP3playActivity extends Activity {
 		File fileMusic = new File(FILE_PATH_NAME);
 		if (savedInstanceState != null) {
 			musicStartTime = savedInstanceState.getInt(MUSIC_SAVE_START_TIME);
+
 		}
 		if (fileMusic.exists()) {
 			btnPlayPauseMusic.setEnabled(true);
@@ -64,7 +66,6 @@ public class MP3playActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			new DownloadMusicfromInternet().execute(FILE_URL);
 		}
-
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if (btnPlayPauseMusic.isChecked()) {
@@ -78,10 +79,17 @@ public class MP3playActivity extends Activity {
 				} else {
 					statusOfFileTextView.setText(R.string.pausing);
 					musicPlayer.pause();
+					musicStartTime = musicPlayer.getCurrentPosition();
 					btnPlayPauseMusic.setChecked(false);
 				}
 			}
 		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		btnPlayPauseMusic.setChecked(false);
 	}
 
 	@Override
