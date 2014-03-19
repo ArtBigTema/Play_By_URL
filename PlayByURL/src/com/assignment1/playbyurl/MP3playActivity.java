@@ -29,32 +29,32 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class MP3playActivity extends Activity {
-	//static final String FILE_URL = "http://cs1-29v4.vk.me/p33/27d44612a54fe5.mp3";
+	// static final String FILE_URL = "http://cs1-29v4.vk.me/p33/27d44612a54fe5.mp3";
 	static final String FILE_PATH_NAME = Environment
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-			.getPath()+ "/Trololo.mp3";
+			.getPath()
+			+ "/jai_ho.mp3";
 	private static String FILE_URL = "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
 	static final String MUSIC_SAVE_START_TIME = "musicStartTime";
-	private static int musicStartTime=0;
+	private static int musicStartTime = 0;
 	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
 	private ProgressDialog prgDialogDownloadMusic;
 	public static TextView statusOfFileTextView;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.a_mp3_download_play);
 		btnPlayPauseMusic = (ToggleButton) findViewById(R.id.btn_play_pause_music);
 		statusOfFileTextView = (TextView) findViewById(R.id.status_of_file_textview);
 		statusOfFileTextView.setText(R.string.idle);
 		btnPlayPauseMusic.setChecked(false);
 		File fileMusic = new File(FILE_PATH_NAME);
-		if (savedInstanceState!=null){
-			musicStartTime = savedInstanceState.getInt(MUSIC_SAVE_START_TIME);	
-			}
+		if (savedInstanceState != null) {
+			musicStartTime = savedInstanceState.getInt(MUSIC_SAVE_START_TIME);
+		}
 		if (fileMusic.exists()) {
 			btnPlayPauseMusic.setEnabled(true);
 		} else {
@@ -64,11 +64,11 @@ public class MP3playActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			new DownloadMusicfromInternet().execute(FILE_URL);
 		}
-		 
+
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
 				if (btnPlayPauseMusic.isChecked()) {
-					if (musicPlayer==null){
+					if (musicPlayer == null) {
 						playMusicFile();
 					}
 					statusOfFileTextView.setText(R.string.playing);
@@ -103,22 +103,27 @@ public class MP3playActivity extends Activity {
 			file.delete();
 		}
 	}
+
 	@Override
 	protected void onSaveInstanceState(Bundle SaveInstance) {
 		super.onSaveInstanceState(SaveInstance);
-		if (musicPlayer!=null){
+		if (musicPlayer != null) {
 			musicPlayer.pause();
-			SaveInstance.putInt(MUSIC_SAVE_START_TIME, musicPlayer.getCurrentPosition());
+			SaveInstance.putInt(MUSIC_SAVE_START_TIME,
+					musicPlayer.getCurrentPosition());
 			musicPlayer.stop();
 		}
-		}
+	}
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		prgDialogDownloadMusic = new ProgressDialog(this);
-		prgDialogDownloadMusic.setMessage("Downloading Mp3 file. \nPlease wait...");
+		prgDialogDownloadMusic
+				.setMessage("Downloading Mp3 file. \nPlease wait...");
 		prgDialogDownloadMusic.setIndeterminate(false);
 		prgDialogDownloadMusic.setMax(100);
-		prgDialogDownloadMusic.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		prgDialogDownloadMusic
+				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		prgDialogDownloadMusic.setCancelable(false);
 		prgDialogDownloadMusic.show();
 		return prgDialogDownloadMusic;
@@ -131,7 +136,7 @@ public class MP3playActivity extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			statusOfFileTextView.setText(R.string.downloading);
-		showDialog(0);
+			showDialog(0);
 		}
 
 		@Override
@@ -142,12 +147,13 @@ public class MP3playActivity extends Activity {
 				URLConnection conection = url.openConnection();
 				conection.connect();
 				int lenghtOfMP3File = conection.getContentLength();
-				InputStream inputURLFile = new BufferedInputStream(url.openStream(),
-						10 * 1024);
+				InputStream inputURLFile = new BufferedInputStream(
+						url.openStream(), 10 * 1024);
 
 				File fileMusic = new File(FILE_PATH_NAME);
 				fileMusic.createNewFile();
-				FileOutputStream outputMusicFile = new FileOutputStream(fileMusic);
+				FileOutputStream outputMusicFile = new FileOutputStream(
+						fileMusic);
 
 				byte data[] = new byte[1024];
 				long total = 0;
@@ -188,9 +194,10 @@ public class MP3playActivity extends Activity {
 		musicPlayer = new MediaPlayer();
 		musicPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
-			musicPlayer.setDataSource(getApplicationContext(), Uri.parse(FILE_PATH_NAME));
+			musicPlayer.setDataSource(getApplicationContext(),
+					Uri.parse(FILE_PATH_NAME));
 			musicPlayer.prepare();
-			//musicPlayer.start();
+			// musicPlayer.start();
 			musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 				public void onCompletion(MediaPlayer mp) {
 					Toast.makeText(getApplicationContext(),
