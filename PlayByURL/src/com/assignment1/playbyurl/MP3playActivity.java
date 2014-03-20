@@ -28,8 +28,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class MP3playActivity extends Activity {
-	// static final String FILE_URL =
-	// "http://cs1-29v4.vk.me/p33/27d44612a54fe5.mp3";
 	static final String FILE_PATH_NAME = Environment
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
@@ -40,31 +38,37 @@ public class MP3playActivity extends Activity {
 	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
 	private ProgressDialog prgDialogDownloadMusic;
-	public static TextView statusOfFileTextView;
-	//public static boolean b = false;
+	private TextView statusOfFileTextView;
+	static boolean isRotated = false;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 
 		setContentView(R.layout.a_mp3_download_play);
 		btnPlayPauseMusic = (ToggleButton) findViewById(R.id.btn_play_pause_music);
 		statusOfFileTextView = (TextView) findViewById(R.id.status_of_file_textview);
-		statusOfFileTextView.setText(R.string.idle);
-		btnPlayPauseMusic.setChecked(false);
-		File fileMusic = new File(FILE_PATH_NAME);
-		if (savedInstanceState != null) {
-			musicStartTime = savedInstanceState.getInt(MUSIC_SAVE_START_TIME);
-
-		}
-		if (fileMusic.exists()) {
+		
+		if (isRotated) {
 			btnPlayPauseMusic.setEnabled(true);
+			statusOfFileTextView.setText(R.string.playing);
 		} else {
-			Toast.makeText(
-					getApplicationContext(),
-					"File doesn't exist under SD Card, downloading Mp3 from Internet",
-					Toast.LENGTH_LONG).show();
-			new DownloadMusicfromInternet().execute(FILE_URL);
+			statusOfFileTextView.setText(R.string.idle);
+			File fileMusic = new File(FILE_PATH_NAME);
+			if (fileMusic.exists()) {
+				btnPlayPauseMusic.setEnabled(true);
+			} else {
+				Toast.makeText(
+						getApplicationContext(),
+						"File doesn't exist under SD Card, downloading Mp3 from Internet",
+						Toast.LENGTH_LONG).show();
+				showDialog(0);
+				new DownloadMusicfromInternet().execute(FILE_URL);
+				dismissDialog(0);
+				
+			}
 		}
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
@@ -72,9 +76,9 @@ public class MP3playActivity extends Activity {
 					if (musicPlayer == null) {
 						playMusicFile();
 					}
-					statusOfFileTextView.setText(R.string.playing);
 					musicPlayer.seekTo(musicStartTime);
 					musicPlayer.start();
+					statusOfFileTextView.setText(R.string.playing);
 					btnPlayPauseMusic.setChecked(true);
 				} else {
 					statusOfFileTextView.setText(R.string.pausing);
@@ -87,15 +91,13 @@ public class MP3playActivity extends Activity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		btnPlayPauseMusic.setChecked(false);
-	}
-
-	@Override
 	public void finish() {
 		super.finish();
-		musicPlayer.stop();
+		isRotated=false;
+		btnPlayPauseMusic.setChecked(false);
+		if (musicPlayer!=null){
+			musicPlayer.stop();
+		}
 		File file = new File(FILE_PATH_NAME);
 		if (file.exists()) {
 			file.delete();
@@ -103,27 +105,27 @@ public class MP3playActivity extends Activity {
 	}
 
 	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		musicPlayer.stop();
-		File file = new File(FILE_PATH_NAME);
-		if (file.exists()) {
-			file.delete();
+	protected void onRestoreInstanceState(Bundle SaveInstance) {
+		super.onRestoreInstanceState(SaveInstance);
+		if (btnPlayPauseMusic.isChecked()){
+			playMusicFile();
+			musicPlayer.seekTo(SaveInstance.getInt(MUSIC_SAVE_START_TIME));	
+			musicPlayer.start();
 		}
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle SaveInstance) {
 		super.onSaveInstanceState(SaveInstance);
+		isRotated = true;
 		if (musicPlayer != null) {
 			musicPlayer.pause();
-			SaveInstance.putInt(MUSIC_SAVE_START_TIME,
-					musicPlayer.getCurrentPosition());
+			SaveInstance.putInt(MUSIC_SAVE_START_TIME, musicPlayer.getCurrentPosition());
 			musicPlayer.stop();
 		}
 	}
 
-	@Override
+
 	protected Dialog onCreateDialog(int id) {
 		prgDialogDownloadMusic = new ProgressDialog(this);
 		prgDialogDownloadMusic
@@ -144,7 +146,7 @@ public class MP3playActivity extends Activity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			statusOfFileTextView.setText(R.string.downloading);
-			showDialog(0);
+		//	showDialog(0);
 		}
 
 		@Override
@@ -188,7 +190,7 @@ public class MP3playActivity extends Activity {
 		@Override
 		protected void onPostExecute(String file_url) {
 			statusOfFileTextView.setText(R.string.complete);
-			dismissDialog(0);
+		//	dismissDialog(0);
 			Toast.makeText(getApplicationContext(),
 					"Download complete, playing Music", Toast.LENGTH_LONG)
 					.show();
@@ -197,15 +199,12 @@ public class MP3playActivity extends Activity {
 	}
 
 	protected void playMusicFile() {
-		btnPlayPauseMusic.setEnabled(true);
-		btnPlayPauseMusic.setChecked(false);
 		musicPlayer = new MediaPlayer();
 		musicPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			musicPlayer.setDataSource(getApplicationContext(),
 					Uri.parse(FILE_PATH_NAME));
 			musicPlayer.prepare();
-			// musicPlayer.start();
 			musicPlayer.setOnCompletionListener(new OnCompletionListener() {
 				public void onCompletion(MediaPlayer mp) {
 					Toast.makeText(getApplicationContext(),
