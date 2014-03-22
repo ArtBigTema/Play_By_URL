@@ -3,25 +3,19 @@ package com.assignment1.playbyurl;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.assignment1.playbyurl.R;
 
 public class DownloadMusicfromInternet extends
 		AsyncTask<String, String, String> {
-	public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 	private ProgressDialog prgDialogDownloadMusic;
 	private FileOutputStream outputMusicFileStream;
 	private Context context;
@@ -65,24 +59,27 @@ public class DownloadMusicfromInternet extends
 			URL url = new URL(f_url[0]);
 			URLConnection conection = url.openConnection();
 			conection.connect();
-			int lenghtOfMP3File = conection.getContentLength();
+			int lengthOfMP3File = conection.getContentLength();
 			InputStream inputURLMP3File = new BufferedInputStream(
 					url.openStream(), 10 * 1024);
 
 			File fileMusic = new File(MP3playActivity.FILE_PATH_NAME);
-			outputMusicFileStream = new FileOutputStream(fileMusic,
-					fileMusic.createNewFile());
-			inputURLMP3File.skip(fileMusic.length());
+			if (!fileMusic.exists()) {
+				fileMusic.createNewFile();
+				outputMusicFileStream = new FileOutputStream(fileMusic, false);
+			} else {
+				outputMusicFileStream = new FileOutputStream(fileMusic, true);
+			}
+			inputURLMP3File.skip(lengthOfMP3File);
 			byte data[] = new byte[1024];
 			long total = fileMusic.length();
 			while ((count = inputURLMP3File.read(data)) != -1) {
 				total += count;
-				publishProgress("" + (int) ((total * 100) / lenghtOfMP3File));
+				publishProgress("" + (int) ((total * 100) / lengthOfMP3File));
 				outputMusicFileStream.write(data, 0, count);
 			}
 			outputMusicFileStream.flush();
 			outputMusicFileStream.close();
-			fileMusic.length();
 			inputURLMP3File.close();
 		} catch (Exception e) {
 			Log.e("Error: ", e.getMessage());
