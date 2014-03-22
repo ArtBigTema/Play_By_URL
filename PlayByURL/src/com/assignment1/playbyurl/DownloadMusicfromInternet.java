@@ -18,6 +18,7 @@ public class DownloadMusicfromInternet extends
 		AsyncTask<String, String, String> {
 	private ProgressDialog prgDialogDownloadMusic;
 	private FileOutputStream outputMusicFileStream;
+	@SuppressWarnings("unused")
 	private Context context;
 
 	public DownloadMusicfromInternet(Context context) {
@@ -49,14 +50,12 @@ public class DownloadMusicfromInternet extends
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
-	protected String doInBackground(String... f_url) {
-		int count;
+	protected String doInBackground(String... param) {
 		try {
-			URL url = new URL(f_url[0]);
+			URL url = new URL(param[0]);
 			URLConnection conection = url.openConnection();
 			conection.connect();
 			int lengthOfMP3File = conection.getContentLength();
@@ -71,6 +70,7 @@ public class DownloadMusicfromInternet extends
 				outputMusicFileStream = new FileOutputStream(fileMusic, true);
 			}
 			inputURLMP3File.skip(lengthOfMP3File);
+			int count;
 			byte data[] = new byte[1024];
 			long total = fileMusic.length();
 			while ((count = inputURLMP3File.read(data)) != -1) {
@@ -85,7 +85,6 @@ public class DownloadMusicfromInternet extends
 			Log.e("Error: ", e.getMessage());
 		}
 		return null;
-
 	}
 
 	protected void onProgressUpdate(String... progress) {
