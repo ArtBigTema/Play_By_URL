@@ -64,16 +64,15 @@ public class DownloadMusicfromInternet extends
 		try {
 			URL url = new URL(f_url[0]);
 			URLConnection conection = url.openConnection();
-			conection.connect(); 
+			conection.connect();
 			int lenghtOfMP3File = conection.getContentLength();
 			InputStream inputURLMP3File = new BufferedInputStream(
 					url.openStream(), 10 * 1024);
-		
-	
 
-           File fileMusic = new File(MP3playActivity.FILE_PATH_NAME);
-outputMusicFileStream = new FileOutputStream(fileMusic,	fileMusic.createNewFile());
-inputURLMP3File.skip(fileMusic.length());
+			File fileMusic = new File(MP3playActivity.FILE_PATH_NAME);
+			outputMusicFileStream = new FileOutputStream(fileMusic,
+					fileMusic.createNewFile());
+			inputURLMP3File.skip(fileMusic.length());
 			byte data[] = new byte[1024];
 			long total = fileMusic.length();
 			while ((count = inputURLMP3File.read(data)) != -1) {
@@ -89,8 +88,6 @@ inputURLMP3File.skip(fileMusic.length());
 			Log.e("Error: ", e.getMessage());
 		}
 		return null;
-	
-
 
 	}
 
