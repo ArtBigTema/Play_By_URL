@@ -1,15 +1,9 @@
 package com.assignment1.playbyurl;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import com.assignment1.playbyurl.R;
 
+import java.io.File;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -64,7 +58,6 @@ public class MP3playActivity extends Activity {
 	@Override
 	public void finish() {
 		super.finish();
-		btnPlayPauseMusic.setChecked(false);
 		if (musicPlayer != null) {
 			musicPlayer.stop();
 		}
@@ -72,11 +65,6 @@ public class MP3playActivity extends Activity {
 		if (file.exists()) {
 			file.delete();
 		}
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
 	}
 
 	private void playMusicFile() {
