@@ -27,14 +27,9 @@ public class MP3playActivity extends Activity {
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
 			+ "/ja_ho.mp3";
-	// static final String FILE_URL =
-	// "http://cs1-51v4.vk.me/p10/1fcde874519e80.mp3";
 	public static final String FILE_URL = "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
-	// public static final String CURR_POS_SAVE = "currPosPlay";
-	// private static int currPosPlay = 0;
 	public static ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
-	public ProgressDialog prgDialogDownloadMusic;
 	public static TextView statusOfFileTextView;
 
 	@Override
@@ -44,21 +39,9 @@ public class MP3playActivity extends Activity {
 		setContentView(R.layout.a_mp3_download_play);
 		btnPlayPauseMusic = (ToggleButton) findViewById(R.id.btn_play_pause_music);
 		statusOfFileTextView = (TextView) findViewById(R.id.status_of_file_textview);
-
 		statusOfFileTextView.setText(R.string.idle);
-		File fileMusic = new File(FILE_PATH_NAME);
-
-		if (fileMusic.exists()) {
-			btnPlayPauseMusic.setEnabled(true);
-		} else {
-			Toast.makeText(
-					getApplicationContext(),
-					"File doesn't exist under SD Card, downloading Mp3 from Internet",
-					Toast.LENGTH_LONG).show();
-			new DownloadMusicfromInternet(MP3playActivity.this).execute(
-					FILE_URL, FILE_PATH_NAME);
-
-		}
+		new DownloadMusicfromInternet(this).execute(FILE_URL, FILE_PATH_NAME);
+		btnPlayPauseMusic.setEnabled(true);
 
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
@@ -76,7 +59,6 @@ public class MP3playActivity extends Activity {
 				}
 			}
 		});
-
 	}
 
 	@Override
@@ -95,10 +77,9 @@ public class MP3playActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-
 	}
 
-	protected void playMusicFile() {
+	private void playMusicFile() {
 		musicPlayer = new MediaPlayer();
 		musicPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
