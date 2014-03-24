@@ -60,19 +60,12 @@ public class DownloadMusicfromInternet extends
 			conection.connect();
 			int lengthOfMP3File = conection.getContentLength();
 			InputStream inputURLMP3File = new BufferedInputStream(
-					url.openStream(), 10 * 1024);
-
+					conection.getInputStream(), 10 * 1024);
 			File fileMusic = new File(MP3playActivity.FILE_PATH_NAME);
-			if (!fileMusic.exists()) {
-				fileMusic.createNewFile();
-				outputMusicFileStream = new FileOutputStream(fileMusic, false);
-			} else {
-				outputMusicFileStream = new FileOutputStream(fileMusic, true);
-			}
-			inputURLMP3File.skip(lengthOfMP3File);
+			outputMusicFileStream = new FileOutputStream(fileMusic, fileMusic.createNewFile());
 			int count;
 			byte data[] = new byte[1024];
-			long total = fileMusic.length();
+			long total = 0;
 			while ((count = inputURLMP3File.read(data)) != -1) {
 				total += count;
 				publishProgress("" + (int) ((total * 100) / lengthOfMP3File));
