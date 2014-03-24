@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,6 +21,15 @@ public class DownloadMusicfromInternet extends
 	private FileOutputStream outputMusicFileStream;
 	@SuppressWarnings("unused")
 	private Context context;
+	public ListenerOnComplete listenerDownloadFile;
+
+	public void addListener(ListenerOnComplete listener) {
+		this.listenerDownloadFile = listener;
+	}
+
+	public void doSomething() {
+		listenerDownloadFile.doFinalActions(); // class A не знает кто его слушает
+	}
 
 	public DownloadMusicfromInternet(Context context) {
 		this.context = context;
@@ -37,7 +47,6 @@ public class DownloadMusicfromInternet extends
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		MP3playActivity.statusOfFileTextView.setText(R.string.downloading);
 		prgDialogDownloadMusic.show();
 	}
 
@@ -61,8 +70,9 @@ public class DownloadMusicfromInternet extends
 			int lengthOfMP3File = conection.getContentLength();
 			InputStream inputURLMP3File = new BufferedInputStream(
 					conection.getInputStream(), 10 * 1024);
-			File fileMusic = new File(MP3playActivity.FILE_PATH_NAME);
-			outputMusicFileStream = new FileOutputStream(fileMusic, fileMusic.createNewFile());
+			File fileMusic = new File(param[1]);
+			outputMusicFileStream = new FileOutputStream(fileMusic,
+					fileMusic.createNewFile());
 			int count;
 			byte data[] = new byte[1024];
 			long total = 0;
@@ -88,8 +98,12 @@ public class DownloadMusicfromInternet extends
 	protected void onPostExecute(String file_url) {
 		prgDialogDownloadMusic.dismiss();
 		prgDialogDownloadMusic.hide();
-		MP3playActivity.statusOfFileTextView.setText(R.string.complete);
 		prgDialogDownloadMusic.setMessage("Download complete, playing Music");
-		MP3playActivity.btnPlayPauseMusic.setEnabled(true);
+		listenerDownloadFile.doFinalActions();
 	}
+
+}
+
+interface ListenerOnComplete {
+	public void doFinalActions();
 }
