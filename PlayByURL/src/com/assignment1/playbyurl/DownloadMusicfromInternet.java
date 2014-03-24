@@ -23,12 +23,12 @@ public class DownloadMusicfromInternet extends
 	private Context context;
 	public ListenerOnComplete listenerDownloadFile;
 
-	public void addListener(ListenerOnComplete listener) {
+	public void setListener(ListenerOnComplete listener) {
 		this.listenerDownloadFile = listener;
 	}
 
 	public void doSomething() {
-		listenerDownloadFile.doFinalActions(); // class A не знает кто его слушает
+		listenerDownloadFile.doFinalActions(); 
 	}
 
 	public DownloadMusicfromInternet(Context context) {
