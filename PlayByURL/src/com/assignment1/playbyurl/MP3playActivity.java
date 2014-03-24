@@ -3,6 +3,7 @@ package com.assignment1.playbyurl;
 import com.assignment1.playbyurl.R;
 
 import java.io.File;
+
 import android.app.Activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -16,15 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class MP3playActivity extends Activity {
+public class MP3playActivity extends Activity implements ListenerOnComplete {
 	public static final String FILE_PATH_NAME = Environment
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
 			+ "/ja_ho.mp3";
 	public static final String FILE_URL = "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
-	public static ToggleButton btnPlayPauseMusic;
+	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
-	public static TextView statusOfFileTextView;
+	private TextView statusOfFileTextView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +35,10 @@ public class MP3playActivity extends Activity {
 		btnPlayPauseMusic = (ToggleButton) findViewById(R.id.btn_play_pause_music);
 		statusOfFileTextView = (TextView) findViewById(R.id.status_of_file_textview);
 		statusOfFileTextView.setText(R.string.idle);
-		new DownloadMusicfromInternet(this).execute(FILE_URL, FILE_PATH_NAME);
-		btnPlayPauseMusic.setEnabled(true);
+		DownloadMusicfromInternet downloadMusic = (DownloadMusicfromInternet) new DownloadMusicfromInternet(
+				this).execute(FILE_URL, FILE_PATH_NAME);
+		downloadMusic.addListener(this);
+		statusOfFileTextView.setText(R.string.downloading);
 
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
 			public void onClick(View v) {
@@ -87,5 +90,11 @@ public class MP3playActivity extends Activity {
 			Toast.makeText(getApplicationContext(), e.toString(),
 					Toast.LENGTH_LONG).show();
 		}
+	}
+
+	@Override
+	public void doFinalActions() {
+		btnPlayPauseMusic.setEnabled(true);
+		statusOfFileTextView.setText(R.string.complete);
 	}
 }
