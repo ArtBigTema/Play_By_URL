@@ -37,7 +37,7 @@ public class MP3playActivity extends Activity implements ListenerOnComplete {
 		statusOfFileTextView.setText(R.string.idle);
 		DownloadMusicfromInternet downloadMusic = (DownloadMusicfromInternet) new DownloadMusicfromInternet(
 				this).execute(FILE_URL, FILE_PATH_NAME);
-		downloadMusic.addListener(this);
+		downloadMusic.setListener(this);
 		statusOfFileTextView.setText(R.string.downloading);
 
 		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
