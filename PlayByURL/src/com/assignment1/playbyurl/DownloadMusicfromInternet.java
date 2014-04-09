@@ -13,22 +13,16 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.assignment1.playbyurl.R;
-
 public class DownloadMusicfromInternet extends
 		AsyncTask<String, String, String> {
 	private ProgressDialog prgDialogDownloadMusic;
 	private FileOutputStream outputMusicFileStream;
 	@SuppressWarnings("unused")
 	private Context context;
-	public ListenerOnComplete listenerDownloadFile;
+	public ListenerOnCompleteDownload listenerDownloadFile;
 
-	public void setListener(ListenerOnComplete listener) {
+	public void setListener(ListenerOnCompleteDownload listener) {
 		this.listenerDownloadFile = listener;
-	}
-
-	public void doSomething() {
-		listenerDownloadFile.doFinalActions(); 
 	}
 
 	public DownloadMusicfromInternet(Context context) {
@@ -85,6 +79,9 @@ public class DownloadMusicfromInternet extends
 			outputMusicFileStream.close();
 			inputURLMP3File.close();
 		} catch (Exception e) {
+			this.cancel(true);
+			prgDialogDownloadMusic.cancel();
+			listenerDownloadFile.doErrActions("Error\n" + e.toString());
 			Log.e("Error: ", e.getMessage());
 		}
 		return null;
@@ -98,12 +95,12 @@ public class DownloadMusicfromInternet extends
 	protected void onPostExecute(String file_url) {
 		prgDialogDownloadMusic.dismiss();
 		prgDialogDownloadMusic.hide();
-		prgDialogDownloadMusic.setMessage("Download complete, playing Music");
 		listenerDownloadFile.doFinalActions();
 	}
 
-}
+	public static interface ListenerOnCompleteDownload {
+		public void doFinalActions();
 
-interface ListenerOnComplete {
-	public void doFinalActions();
+		public void doErrActions(String message);
+	}
 }
