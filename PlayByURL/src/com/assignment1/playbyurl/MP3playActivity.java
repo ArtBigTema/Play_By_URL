@@ -26,7 +26,8 @@ public class MP3playActivity extends Activity implements
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
 			+ "/ja_ho.mp3";
-	public static final String FILE_URL = "http://cs1-51v4.vk.me/p8/4109717d62ef07.mp3";// "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
+	public static final String FILE_URL = "http://vozmimp3.com/s1/down2/6-7v4-p20-e7414f082da6c4/ejtralnaya_muzyka_pianino__dlya_montazha.mp3";//"http://cs1-39v4.vk.me/p3/6a85cc3483eb2e.mp3";// "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
+																						
 	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
 	private TextView statusOfFileTextView;
@@ -36,35 +37,42 @@ public class MP3playActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.a_mp3_download_play);
-
+		DownloadMusicfromInternet downloadMusic = (DownloadMusicfromInternet) new DownloadMusicfromInternet(
+				this);
+		DownloadMusicfromInternet.ListenerOnCompleteDownload listenerOnCompleteDownload = this;
+		downloadMusic.setListener(listenerOnCompleteDownload);
 		btnPlayPauseMusic = (ToggleButton) findViewById(R.id.btn_play_pause_music);
 		statusOfFileTextView = (TextView) findViewById(R.id.status_of_file_textview);
 		statusOfFileTextView.setText(R.string.idle);
 		if (!isOnline()) {
-			doErrActions("Error. Turn on wifi & Restart app, please");
+			doErrorActions("Error. Turn on wifi & Restart app, please");
 		} else {
-			DownloadMusicfromInternet downloadMusic = (DownloadMusicfromInternet) new DownloadMusicfromInternet(
-					this).execute(FILE_URL, FILE_PATH_NAME);
-			downloadMusic.setListener(this);
-			statusOfFileTextView.setText(R.string.downloading);
-
-			btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
-				public void onClick(View v) {
-					if (btnPlayPauseMusic.isChecked()) {
-						if (musicPlayer == null) {
-							playMusicFile();
-						}
-						musicPlayer.start();
-						statusOfFileTextView.setText(R.string.playing);
-						btnPlayPauseMusic.setChecked(true);
-					} else {
-						statusOfFileTextView.setText(R.string.pausing);
-						musicPlayer.pause();
-						btnPlayPauseMusic.setChecked(false);
-					}
-				}
-			});
+			if (downloadMusic.listenerDownloadFile != null) {
+				downloadMusic.execute(FILE_URL, FILE_PATH_NAME);
+				statusOfFileTextView.setText(R.string.downloading);
+			}
 		}
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		btnPlayPauseMusic.setOnClickListener(new Button.OnClickListener() {
+			public void onClick(View v) {
+				if (btnPlayPauseMusic.isChecked()) {
+					if (musicPlayer == null) {
+						playMusicFile();
+					}
+					musicPlayer.start();
+					statusOfFileTextView.setText(R.string.playing);
+					btnPlayPauseMusic.setChecked(true);
+				} else {
+					statusOfFileTextView.setText(R.string.pausing);
+					musicPlayer.pause();
+					btnPlayPauseMusic.setChecked(false);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -117,7 +125,7 @@ public class MP3playActivity extends Activity implements
 	}
 
 	@Override
-	public void doErrActions(String message) {
+	public void doErrorActions(String message) {
 		btnPlayPauseMusic.setEnabled(false);
 		statusOfFileTextView.setText(message);
 	}
