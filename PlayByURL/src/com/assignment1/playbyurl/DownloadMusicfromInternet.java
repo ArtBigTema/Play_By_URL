@@ -20,6 +20,8 @@ public class DownloadMusicfromInternet extends
 	@SuppressWarnings("unused")
 	private Context context;
 	public ListenerOnCompleteDownload listenerDownloadFile;
+	private boolean size_is_known;
+	private boolean download_error = false;
 
 	public void setListener(ListenerOnCompleteDownload listener) {
 		this.listenerDownloadFile = listener;
@@ -31,8 +33,6 @@ public class DownloadMusicfromInternet extends
 		prgDialogDownloadMusic = new ProgressDialog(context);
 		prgDialogDownloadMusic
 				.setMessage("Downloading Mp3 file. \nPlease wait...");
-		prgDialogDownloadMusic.setIndeterminate(false);
-		prgDialogDownloadMusic.setMax(100);
 		prgDialogDownloadMusic
 				.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		prgDialogDownloadMusic.setCancelable(false);
@@ -70,37 +70,54 @@ public class DownloadMusicfromInternet extends
 			int count;
 			byte data[] = new byte[1024];
 			long total = 0;
+			if (lengthOfMP3File != -1) {// with status
+				prgDialogDownloadMusic.setIndeterminate(false);
+				prgDialogDownloadMusic.setMax(100);
+				size_is_known = true;
+			} else {
+				prgDialogDownloadMusic.setIndeterminate(true);
+				lengthOfMP3File = 1;
+				size_is_known = false;
+			}
 			while ((count = inputURLMP3File.read(data)) != -1) {
 				total += count;
 				publishProgress("" + (int) ((total * 100) / lengthOfMP3File));
 				outputMusicFileStream.write(data, 0, count);
 			}
+
 			outputMusicFileStream.flush();
 			outputMusicFileStream.close();
 			inputURLMP3File.close();
 		} catch (Exception e) {
-			this.cancel(true);
-			prgDialogDownloadMusic.cancel();
-			listenerDownloadFile.doErrActions("Error\n" + e.toString());
+			download_error = true;
 			Log.e("Error: ", e.getMessage());
 		}
 		return null;
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		prgDialogDownloadMusic.setProgress(Integer.parseInt(progress[0]));
+		if (size_is_known) {
+			prgDialogDownloadMusic.setProgress(Integer.parseInt(progress[0]));
+		} else {
+			prgDialogDownloadMusic.setProgressNumberFormat(progress[0]);
+		}
 	}
 
 	@Override
 	protected void onPostExecute(String file_url) {
 		prgDialogDownloadMusic.dismiss();
 		prgDialogDownloadMusic.hide();
-		listenerDownloadFile.doFinalActions();
+		if (!download_error) {
+			listenerDownloadFile.doFinalActions();
+		} else {
+			listenerDownloadFile.doErrorActions("Error\n"
+					+ "URL isn't correct");
+		}
 	}
 
 	public static interface ListenerOnCompleteDownload {
 		public void doFinalActions();
 
-		public void doErrActions(String message);
+		public void doErrorActions(String message);
 	}
 }
