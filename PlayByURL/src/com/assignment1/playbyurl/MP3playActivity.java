@@ -26,8 +26,8 @@ public class MP3playActivity extends Activity implements
 			.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 			.getPath()
 			+ "/ja_ho.mp3";
-	public static final String FILE_URL = "http://vozmimp3.com/s1/down2/6-7v4-p20-e7414f082da6c4/ejtralnaya_muzyka_pianino__dlya_montazha.mp3";//"http://cs1-39v4.vk.me/p3/6a85cc3483eb2e.mp3";// "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
-																						
+	public static final String FILE_URL ="http://tayfabandista.org/su_anda_simdi/birinci_rollama.mp3"; //"http://vozmimp3.com/s1/down2/6-7v4-p20-e7414f082da6c4/ejtralnaya_muzyka_pianino__dlya_montazha.mp3";// "http://android.programmerguru.com/wp-content/uploads/2014/01/jai_ho.mp3";
+
 	private ToggleButton btnPlayPauseMusic;
 	private MediaPlayer musicPlayer;
 	private TextView statusOfFileTextView;
@@ -47,10 +47,8 @@ public class MP3playActivity extends Activity implements
 		if (!isOnline()) {
 			doErrorActions("Error. Turn on wifi & Restart app, please");
 		} else {
-			if (downloadMusic.listenerDownloadFile != null) {
-				downloadMusic.execute(FILE_URL, FILE_PATH_NAME);
-				statusOfFileTextView.setText(R.string.downloading);
-			}
+			downloadMusic.execute(FILE_URL, FILE_PATH_NAME);
+			statusOfFileTextView.setText(R.string.downloading);
 		}
 	}
 
