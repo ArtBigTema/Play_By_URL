@@ -20,8 +20,8 @@ public class DownloadMusicfromInternet extends
 	@SuppressWarnings("unused")
 	private Context context;
 	public ListenerOnCompleteDownload listenerDownloadFile;
-	private boolean size_is_known;
-	private boolean download_error = false;
+	private boolean sizeIsKnown;
+	private boolean downloadError = false;
 
 	public void setListener(ListenerOnCompleteDownload listener) {
 		this.listenerDownloadFile = listener;
@@ -73,11 +73,11 @@ public class DownloadMusicfromInternet extends
 			if (lengthOfMP3File != -1) {// with status
 				prgDialogDownloadMusic.setIndeterminate(false);
 				prgDialogDownloadMusic.setMax(100);
-				size_is_known = true;
+				sizeIsKnown = true;
 			} else {
 				prgDialogDownloadMusic.setIndeterminate(true);
 				lengthOfMP3File = 1;
-				size_is_known = false;
+				sizeIsKnown = false;
 			}
 			while ((count = inputURLMP3File.read(data)) != -1) {
 				total += count;
@@ -89,14 +89,14 @@ public class DownloadMusicfromInternet extends
 			outputMusicFileStream.close();
 			inputURLMP3File.close();
 		} catch (Exception e) {
-			download_error = true;
+			downloadError = true;
 			Log.e("Error: ", e.getMessage());
 		}
 		return null;
 	}
 
 	protected void onProgressUpdate(String... progress) {
-		if (size_is_known) {
+		if (sizeIsKnown) {
 			prgDialogDownloadMusic.setProgress(Integer.parseInt(progress[0]));
 		} else {
 			prgDialogDownloadMusic.setProgressNumberFormat(progress[0]);
@@ -107,11 +107,11 @@ public class DownloadMusicfromInternet extends
 	protected void onPostExecute(String file_url) {
 		prgDialogDownloadMusic.dismiss();
 		prgDialogDownloadMusic.hide();
-		if (!download_error) {
+		if (!downloadError) {
 			listenerDownloadFile.doFinalActions();
 		} else {
-			listenerDownloadFile.doErrorActions("Error\n"
-					+ "URL isn't correct");
+			listenerDownloadFile
+					.doErrorActions("Error\n" + "URL isn't correct");
 		}
 	}
 
