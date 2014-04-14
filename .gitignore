@@ -1,5 +1,6 @@
 *.pydevproject
 bin/**
+gen/**
 tmp/**
 tmp/**/*
 *.tmp
